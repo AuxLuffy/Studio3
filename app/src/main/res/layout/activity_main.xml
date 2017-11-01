@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.sunzh.studio3.MainActivity">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="bindRemoteService"
+        android:text="bind_remote_service" />
+
+    <EditText
+        android:id="@+id/et_aidl_id"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="输入学员id"
+        android:inputType="number" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="invokeRemote"
+        android:text="调用远程服务的方法" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="unbindRemoteService"
+        android:text="unbind_remote_service" />
+</LinearLayout>
