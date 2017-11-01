@@ -103,8 +103,10 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     public void unbindRemoteService(View view) {
-        unbindService(conn);
-        conn = null;
-        Toast.makeText(MainActivity.this, "解绑服务", Toast.LENGTH_SHORT).show();
+        if(conn!=null) {
+            unbindService(conn);
+            conn = null;
+            Toast.makeText(MainActivity.this, "解绑服务", Toast.LENGTH_SHORT).show();
+        }
     }
 }
