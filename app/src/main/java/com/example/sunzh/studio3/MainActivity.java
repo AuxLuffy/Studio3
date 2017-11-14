@@ -31,6 +31,22 @@ public class MainActivity extends AppCompatActivity {
      */
     private IStudentService iStudentService;
     private TextView etAidlId;
+    /**
+     * 当Binder死亡时，我们就会通过这个代理收到通知这时我们可以重新发起请求连接
+     */
+    private IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() {
+        @Override
+        public void binderDied() {
+            if(iStudentService == null) {
+                return;
+            }
+            iStudentService.asBinder().unlinkToDeath(mDeathRecipient, 0);
+            iStudentService = null;
+            //此下面就是重新建立进程间通信
+            bindService(intent, conn, BIND_AUTO_CREATE);
+        }
+    };
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +61,18 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     public void bindRemoteService(View view) {
-        Intent intent = createIntent(this, new Intent("com.example.remoteservice.Service.MyStudentService"));
+        intent = createIntent(this, new Intent("com.example.remoteservice.Service.MyStudentService"));
         if (intent != null && conn == null) {
             conn = new ServiceConnection() {
 
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     iStudentService = IStudentService.Stub.asInterface(service);
+                    try {
+                        service.linkToDeath(mDeathRecipient, 0);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -97,16 +118,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+//    @Override
+//    public void setRequestedOrientation(int requestedOrientation) {
+//        return;
+//    }
+
     /**
      * 解绑远程服务
      *
      * @param view
      */
     public void unbindRemoteService(View view) {
-        if(conn!=null) {
+        if (conn != null) {
             unbindService(conn);
             conn = null;
             Toast.makeText(MainActivity.this, "解绑服务", Toast.LENGTH_SHORT).show();
         }
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
 }

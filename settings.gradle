@@ -1,1 +1,1 @@
-include ':app', ':remoteservice'
+include ':app', ':remoteservice', ':messengeripc'
