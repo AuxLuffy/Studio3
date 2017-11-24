@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="fraction1" type="fraction">65%</item>
+    <item name="fraction2" type="fraction">70%</item>
+    <integer name="int1">13</integer>
+    <integer name="int2">14</integer>
+    <string name="app_name">Studio3</string>
+</resources>

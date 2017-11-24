@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin:'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 26
@@ -35,4 +36,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:0.5'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
+    implementation 'org.greenrobot:greendao:3.2.2'
 }

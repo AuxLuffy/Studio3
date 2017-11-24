@@ -25,6 +25,10 @@
                 <action android:name="com.example.remoteservice.Service.MyStudentService" />
             </intent-filter>
         </service>
+        <service
+            android:name=".Service.BookManagerService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

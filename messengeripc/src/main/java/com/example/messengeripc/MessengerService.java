@@ -50,4 +50,9 @@ public class MessengerService extends Service {
         Log.i(TAG, "onBind");
         return mMessenger.getBinder();
     }
+
+    @Override
+    public void onRebind(Intent intent) {
+        super.onRebind(intent);
+    }
 }
