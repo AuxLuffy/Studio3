@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jsbridgedemo.H5Activity;
 import com.example.remoteservice.Book;
 import com.example.remoteservice.IBookManager;
 import com.example.remoteservice.IOnNewBookArrivedListener;
@@ -182,12 +183,13 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     public void unbindRemoteService(View view) {
-        if (conn != null) {
-            unbindService(conn);
-            conn = null;
-            Toast.makeText(MainActivity.this, "解绑服务", Toast.LENGTH_SHORT).show();
-        }
+//        if (conn != null) {
+//            unbindService(conn);
+//            conn = null;
+//            Toast.makeText(MainActivity.this, "解绑服务", Toast.LENGTH_SHORT).show();
+//        }
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        H5Activity.openH5(this, "http://www.baidu.com");
     }
 
     @Override

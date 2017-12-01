@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 26
@@ -6,7 +6,6 @@ android {
 
 
     defaultConfig {
-        applicationId "com.example.jsbridgedemo"
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
@@ -29,14 +28,43 @@ repositories {
     // ...
     maven { url "https://jitpack.io" }
 }
+task clearJar(type: Delete) {
+    delete 'build/libs/h5Activity.jar'
+    delete 'libs/h5Activity.jar'
+}
+
+//task makeJar(type: Copy) {
+//    from('build/intermediates/bundles/debug')
+//    into('libs/')
+//    include('classes.jar')
+//    rename('classes.jar', 'httputils.jar')
+//}
+
+
+//打包任务
+task makeJar(type:org.gradle.api.tasks.bundling.Jar) {
+    //指定生成的jar名
+    baseName 'h5Activity'
+    //从哪里打包class文件
+    from('build/intermediates/classes/debug/com/example/jsbridgedemo')
+    //打包到jar后的目录结构
+    into('com/example/jsbridgedemo/')
+    //去掉不需要打包的目录和文件
+    exclude('BuildConfig.class', 'R.class')
+    //去掉R$开头的文件
+    exclude{ it.name.startsWith('R$');}
+}
+
+makeJar.dependsOn(clearJar, build)
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.github.lzyzsd:jsbridge:1.0.4'
-    compile 'com.google.code.gson:gson:2.8.2'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.github.lzyzsd:jsbridge:1.0.4'
+    implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation 'com.android.support:design:26.1.0'
 }
