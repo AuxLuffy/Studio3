@@ -1,16 +1,25 @@
 package com.example.sunzh.studio3.local;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
+import android.provider.Settings;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,7 +41,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final int MSG_NEW_BOOK_ARRIVED = 1;
+    private static final int NOTIFICATION_REQUESTCODE = 1;
+    private static final int REQUEST_CODE = 100;
+    private static final int REQUEST_CODE_WRITE_SETTINGS = 101;
     /**
+     * private static final int NOTIFICATION_FLAG = 1;
      * 连接服务的对象
      */
     private ServiceConnection conn;
@@ -100,11 +113,22 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     private IBookManager bookManager;
+    private int test = 0;
+
+
+    private NotificationCompat.Builder builder;
+    private NotificationManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+
+        builder = new NotificationCompat.Builder(this.getApplicationContext(), "test");
+        notificationManager = (NotificationManager) this.getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         etAidlId = (TextView) findViewById(R.id.et_aidl_id);
         bindService(new Intent(this, BookManagerService.class), mBookConn, BIND_AUTO_CREATE);
     }
@@ -183,13 +207,12 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     public void unbindRemoteService(View view) {
-//        if (conn != null) {
-//            unbindService(conn);
-//            conn = null;
-//            Toast.makeText(MainActivity.this, "解绑服务", Toast.LENGTH_SHORT).show();
-//        }
+        if (conn != null) {
+            unbindService(conn);
+            conn = null;
+            Toast.makeText(MainActivity.this, "解绑服务", Toast.LENGTH_SHORT).show();
+        }
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        H5Activity.openH5(this, "http://www.baidu.com");
     }
 
     @Override
@@ -216,5 +239,96 @@ public class MainActivity extends AppCompatActivity {
             unbindService(conn);
         }
         super.onDestroy();
+    }
+
+    public void jsBridge(View view) {
+        H5Activity.openH5(this, "http://www.baidu.com");
+    }
+
+    public void notify(View view) {
+        test++;
+        builder.setSmallIcon(android.R.drawable.sym_action_chat);//icon图标，如果不设置，Notification不会显示出来
+        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), android.R.drawable.sym_action_call));
+        builder.setTicker("滚动提示,滚动提示,滚动提示\n滚动提示,滚动提示,滚动提示.....");//滚动提示
+        builder.setContentTitle("这个是标题" + test);//标题
+        builder.setContentText("这个是内容" + test + "\r\n内空副！！！").setNumber(test);//内容
+        builder.setContentInfo("右侧提示");
+        builder.setNumber(test);//在右边显示一个数量，等价于setcontentinfo函数，如果有设置setcontentinfo，那么本函数会被覆盖
+        builder.setOngoing(true);//是否常驻状态栏
+        builder.setOnlyAlertOnce(true);//是否只提示一次，true-如果notification已经存在状态栏即使再调用notify也不会更新
+        builder.setProgress(100, 50, false);//滚动条。第三个参数：true-不确定的，不会显示进度条，false-根据max和progress来显示进度条
+        builder.setUsesChronometer(true);//显示一个计数器
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+//            inboxStyle.setBigContentTitle("boxstyle:");
+//            inboxStyle.addLine("1");
+//            inboxStyle.addLine("2");
+//            builder.setStyle(inboxStyle);
+//        }
+//        builder.setDefaults(Notification.DEFAULT_VIBRATE);
+        //铃声，震动，提示灯默认设置
+        //铃声、振动、提示灯设置，DEFAULT_ALL会忽略已经设置的所有效果
+        builder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+        builder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        builder.setPriority(Notification.DEFAULT_SOUND);
+
+        //意图
+        Intent intent1 = new Intent(this, H5Activity.class);
+        intent1.putExtra(H5Activity.H5_URL, "https://github.com/");
+
+        //生成pendingintent的两种方法
+        PendingIntent pendingIntent = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addNextIntent(intent1);
+            pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        } else {
+            pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent1, PendingIntent.FLAG_ONE_SHOT);
+        }
+        builder.setContentIntent(pendingIntent);
+
+
+        Notification notification = builder.build();
+        notification.flags = Notification.FLAG_NO_CLEAR;
+        notificationManager.notify(111, notification);
+    }
+
+    /**
+     * 请求悬浮窗权限
+     */
+    private void requestAlertWindowPermission() {
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+        intent.setData(Uri.parse("package:" + getPackageName()));
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    /**
+     * 请求更改系统设置权限
+     */
+    private void requestWriteSettings() {
+        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+        intent.setData(Uri.parse("package:" + getPackageName()));
+        startActivityForResult(intent, REQUEST_CODE_WRITE_SETTINGS);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (Settings.canDrawOverlays(this)) {
+                    Log.i(TAG, "悬浮窗权限已允许");
+                }
+            }
+        }
+        if (requestCode == REQUEST_CODE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (Settings.System.canWrite(this)) {
+                    Log.i(TAG, "更改系统设置权限已允许");
+                }
+            }
+        }
+
+
     }
 }

@@ -31,4 +31,18 @@
         android:layout_height="wrap_content"
         android:onClick="unbindRemoteService"
         android:text="unbind_remote_service" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="jsBridge"
+        android:text="百度" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="notify"
+        android:text="通知栏" />
+
+
 </LinearLayout>
