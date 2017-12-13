@@ -11,6 +11,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,12 +19,14 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +41,7 @@ import com.example.sunzh.studio3.remote.BookManagerService;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
     private static final int MSG_NEW_BOOK_ARRIVED = 1;
     private static final int NOTIFICATION_REQUESTCODE = 1;
@@ -124,13 +127,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-
+        startService(new Intent(this, BService.class));
         builder = new NotificationCompat.Builder(this.getApplicationContext(), "test");
         notificationManager = (NotificationManager) this.getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
 
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         etAidlId = (TextView) findViewById(R.id.et_aidl_id);
         bindService(new Intent(this, BookManagerService.class), mBookConn, BIND_AUTO_CREATE);
+        findViewById(R.id.requestPermission).setOnClickListener(this);
     }
 
     /**
@@ -246,6 +250,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void notify(View view) {
+
+        startService(new Intent(this, BService.class));
+//        notifi();
+    }
+
+    private void notifi() {
+        RemoteViews remoteview = new RemoteViews(getPackageName(), R.layout.remoteview);
+//        remoteview.setOnClickFillInIntent(R.id.img_header, );
+
+
         test++;
         builder.setSmallIcon(android.R.drawable.sym_action_chat);//icon图标，如果不设置，Notification不会显示出来
         builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), android.R.drawable.sym_action_call));
@@ -268,9 +282,14 @@ public class MainActivity extends AppCompatActivity {
 //        builder.setDefaults(Notification.DEFAULT_VIBRATE);
         //铃声，震动，提示灯默认设置
         //铃声、振动、提示灯设置，DEFAULT_ALL会忽略已经设置的所有效果
-        builder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+//        builder.setDefaults(Notification.DEFAULT_ALL);
+        builder.setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.ring));
+        builder.setLights(Color.BLUE, 500, 500);
+//        builder.setSound(Uri.parse("file///android_asset/music/ring.wav"));
+//        builder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
         builder.setVisibility(Notification.VISIBILITY_PUBLIC);
-        builder.setPriority(Notification.DEFAULT_SOUND);
+//        builder.setPriority(Notification.PRIORITY_HIGH);
+
 
         //意图
         Intent intent1 = new Intent(this, H5Activity.class);
@@ -283,32 +302,51 @@ public class MainActivity extends AppCompatActivity {
             stackBuilder.addNextIntent(intent1);
             pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
-            pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent1, PendingIntent.FLAG_ONE_SHOT);
+            pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
         }
+
+        PendingIntent broadcast = PendingIntent.getBroadcast(this, REQUEST_CODE, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
+        builder.setContent(remoteview);
 
 
         Notification notification = builder.build();
-        notification.flags = Notification.FLAG_NO_CLEAR;
-        notificationManager.notify(111, notification);
+        notification.flags = Notification.FLAG_ONGOING_EVENT;
+        notificationManager.notify(test, notification);
     }
 
     /**
      * 请求悬浮窗权限
      */
     private void requestAlertWindowPermission() {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-        intent.setData(Uri.parse("package:" + getPackageName()));
-        startActivityForResult(intent, REQUEST_CODE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, REQUEST_CODE);
+            } else {
+                Toast.makeText(MainActivity.this, "已申请", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(MainActivity.this, "android6.0系统以下不需要申请", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
      * 请求更改系统设置权限
      */
     private void requestWriteSettings() {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-        intent.setData(Uri.parse("package:" + getPackageName()));
-        startActivityForResult(intent, REQUEST_CODE_WRITE_SETTINGS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.System.canWrite(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, REQUEST_CODE_WRITE_SETTINGS);
+            } else {
+                Toast.makeText(MainActivity.this, "已申请", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(MainActivity.this, "android6.0系统以下不需要申请", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -318,17 +356,39 @@ public class MainActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (Settings.canDrawOverlays(this)) {
                     Log.i(TAG, "悬浮窗权限已允许");
+                    Toast.makeText(MainActivity.this, "悬浮窗权限已允许", Toast.LENGTH_SHORT).show();
+                    if (!Settings.System.canWrite(this)) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                SystemClock.sleep(3000);
+                                requestWriteSettings();
+                            }
+                        }).start();
+                    }
                 }
             }
         }
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE_WRITE_SETTINGS) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (Settings.System.canWrite(this)) {
                     Log.i(TAG, "更改系统设置权限已允许");
+                    Toast.makeText(MainActivity.this, "更改系统设置权限已允许", Toast.LENGTH_SHORT).show();
                 }
             }
         }
 
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.requestPermission:
+                requestAlertWindowPermission();
+                break;
+            default:
+                break;
+        }
     }
 }

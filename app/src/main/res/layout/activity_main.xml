@@ -44,5 +44,11 @@
         android:onClick="notify"
         android:text="通知栏" />
 
+    <Button
+        android:id="@+id/requestPermission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="请求权限" />
+
 
 </LinearLayout>

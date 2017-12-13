@@ -3,7 +3,10 @@
     package="com.example.sunzh.studio3">
 
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,9 +23,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".remote.BookManagerService"
-            android:process=":remote"></service>
+            android:process=":remote" />
+
+        <receiver
+            android:name=".local.MusicServiceBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service
+            android:name=".local.BService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
