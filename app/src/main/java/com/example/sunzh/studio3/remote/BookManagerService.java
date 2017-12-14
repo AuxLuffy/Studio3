@@ -60,6 +60,7 @@ public class BookManagerService extends Service {
         new Thread(new ServiceWorker()).start();
     }
 
+
     private class ServiceWorker implements Runnable {
 
         @Override

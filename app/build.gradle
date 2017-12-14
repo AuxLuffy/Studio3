@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin:'org.greenrobot.greendao'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 26
@@ -36,7 +36,7 @@ android {
 //}
 
 dependencies {
-    implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
 //    implementation (name:'h5activity', ext:'aar')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'

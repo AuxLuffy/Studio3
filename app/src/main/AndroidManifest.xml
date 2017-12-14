@@ -7,6 +7,23 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
+    <!-- 自定义权限 -->
+    <!-- 危险权限 -->
+    <permission
+        android:name="sunzf.permission.DANGEROUS_TEST"
+        android:description="@string/dangerous_description"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/dangerous_label"
+        android:permissionFlags="costsMoney"
+        android:protectionLevel="dangerous" />
+    <!-- 普通权限 -->
+    <permission
+        android:name="sunzf.permission.NORMAL_TEST"
+        android:description="@string/normal_description"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/normal_label"
+        android:protectionLevel="normal" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -36,7 +53,23 @@
         <service
             android:name=".local.BService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity
+            android:name=".local.permtest.DangerousPermActivity"
+            android:permission="sunzf.permission.DANGEROUS_TEST">
+            <intent-filter>
+                <action android:name="sunzf.intent.action.DANGEROUS_TEST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".local.permtest.NormalPermActivity"
+            android:permission="sunzf.permission.NORMAL_TEST">
+            <intent-filter>
+                <action android:name="sunzf.intent.action.NORMAL_TEST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

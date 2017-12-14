@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.remoteservice">
 
+    <uses-permission android:name="sunzf.permission.DANGEROUS_TEST"/>
+    <uses-permission android:name="sunzf.permission.NORMAL_TEST"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
