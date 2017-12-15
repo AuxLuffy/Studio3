@@ -6,7 +6,8 @@
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- 自定义权限 -->
     <!-- 危险权限 -->
@@ -32,6 +33,7 @@
         android:protectionLevel="normal" />
 
     <uses-permission android:name="com.sunzf.BOOKPROVIDER" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -90,7 +92,13 @@
             android:permission="com.sunzf.BOOKPROVIDER"
             android:process=":bookprovider" />
 
-        <activity android:name=".contentproviderIPC.ProviderActivity"></activity>
+        <activity android:name=".contentproviderIPC.ProviderActivity" />
+
+        <service
+            android:name=".socketIPC.TCPServerService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":tcpserver"></service>
     </application>
 
 </manifest>
