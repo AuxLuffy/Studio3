@@ -50,32 +50,37 @@
         android:layout_height="wrap_content"
         android:text="请求权限" />
 
+    <Button
+        android:id="@+id/btn_content_provider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="provider进程间通讯示例" />
     <!--<TextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="5dp"-->
-        <!--android:gravity="center"-->
-        <!--android:text="自定义权限测试"-->
-        <!--android:textColor="@color/colorPrimary"-->
-        <!--android:textSize="16sp" />-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="5dp"-->
+    <!--android:gravity="center"-->
+    <!--android:text="自定义权限测试"-->
+    <!--android:textColor="@color/colorPrimary"-->
+    <!--android:textSize="16sp" />-->
 
     <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content">-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
 
-        <!--<Button-->
-            <!--android:id="@+id/dangerous_perm"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="危险权限" />-->
+    <!--<Button-->
+    <!--android:id="@+id/dangerous_perm"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="1"-->
+    <!--android:text="危险权限" />-->
 
-        <!--<Button-->
-            <!--android:id="@+id/normal_perm"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="普通权限" />-->
+    <!--<Button-->
+    <!--android:id="@+id/normal_perm"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="1"-->
+    <!--android:text="普通权限" />-->
     <!--</LinearLayout>-->
 
 

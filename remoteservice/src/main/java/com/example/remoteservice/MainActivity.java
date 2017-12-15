@@ -2,12 +2,15 @@ package com.example.remoteservice;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import com.example.remoteservice.db.DatabaseHelper;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String DANGEROUS_ACTION = "sunzf.intent.action.DANGEROUS_TEST";
@@ -27,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.normal_perm).setOnClickListener(this);
         findViewById(R.id.request).setOnClickListener(this);
         mTv = findViewById(R.id.tv_info);
+
+        new DatabaseHelper(this);
+        SQLiteDatabase db ;
     }
 
     @Override

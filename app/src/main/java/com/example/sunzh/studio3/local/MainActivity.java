@@ -37,6 +37,7 @@ import com.example.remoteservice.IOnNewBookArrivedListener;
 import com.example.remoteservice.Service.IStudentService;
 import com.example.remoteservice.Service.Student;
 import com.example.sunzh.studio3.R;
+import com.example.sunzh.studio3.contentproviderIPC.ProviderActivity;
 import com.example.sunzh.studio3.remote.BookManagerService;
 
 import java.util.List;
@@ -135,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         etAidlId = (TextView) findViewById(R.id.et_aidl_id);
         bindService(new Intent(this, BookManagerService.class), mBookConn, BIND_AUTO_CREATE);
         findViewById(R.id.requestPermission).setOnClickListener(this);
+        findViewById(R.id.btn_content_provider).setOnClickListener(this);
     }
 
     /**
@@ -386,6 +388,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.requestPermission:
                 requestAlertWindowPermission();
+                break;
+            case R.id.btn_content_provider:
+                startActivity(new Intent(this, ProviderActivity.class));
                 break;
             default:
                 break;

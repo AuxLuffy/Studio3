@@ -3,4 +3,6 @@
     <string name="dangerous_label">危险等级标签</string>
     <string name="normal_description">普通权限描述</string>
     <string name="normal_label">普通权限标签</string>
+    <string name="bookprovider_description">图书提供者权限描述</string>
+    <string name="bookprovider_label">图书提供者</string>
 </resources>

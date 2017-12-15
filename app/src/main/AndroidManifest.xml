@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
+
     <!-- 自定义权限 -->
     <!-- 危险权限 -->
     <permission
@@ -23,7 +24,14 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/normal_label"
         android:protectionLevel="normal" />
+    <permission
+        android:name="com.sunzf.BOOKPROVIDER"
+        android:description="@string/bookprovider_description"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/bookprovider_label"
+        android:protectionLevel="normal" />
 
+    <uses-permission android:name="com.sunzf.BOOKPROVIDER" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -60,16 +68,29 @@
             android:permission="sunzf.permission.DANGEROUS_TEST">
             <intent-filter>
                 <action android:name="sunzf.intent.action.DANGEROUS_TEST" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".local.permtest.NormalPermActivity"
+        <activity
+            android:name=".local.permtest.NormalPermActivity"
             android:permission="sunzf.permission.NORMAL_TEST">
             <intent-filter>
                 <action android:name="sunzf.intent.action.NORMAL_TEST" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".contentproviderIPC.BookProvider"
+            android:authorities="com.sunzf.bookprovider"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="com.sunzf.BOOKPROVIDER"
+            android:process=":bookprovider" />
+
+        <activity android:name=".contentproviderIPC.ProviderActivity"></activity>
     </application>
 
 </manifest>
