@@ -67,7 +67,11 @@
 
         <activity
             android:name=".local.permtest.DangerousPermActivity"
+            android:parentActivityName=".local.MainActivity"
             android:permission="sunzf.permission.DANGEROUS_TEST">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".local.MainActivity" />
             <intent-filter>
                 <action android:name="sunzf.intent.action.DANGEROUS_TEST" />
 
@@ -76,7 +80,11 @@
         </activity>
         <activity
             android:name=".local.permtest.NormalPermActivity"
+            android:parentActivityName=".local.MainActivity"
             android:permission="sunzf.permission.NORMAL_TEST">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".local.MainActivity" />
             <intent-filter>
                 <action android:name="sunzf.intent.action.NORMAL_TEST" />
 

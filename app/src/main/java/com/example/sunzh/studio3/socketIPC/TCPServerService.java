@@ -65,6 +65,7 @@ public class TCPServerService extends Service {
     private void responseClient(Socket client) {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
         } catch (IOException e) {
             e.printStackTrace();
         }

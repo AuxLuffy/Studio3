@@ -38,6 +38,7 @@ import com.example.remoteservice.Service.IStudentService;
 import com.example.remoteservice.Service.Student;
 import com.example.sunzh.studio3.R;
 import com.example.sunzh.studio3.contentproviderIPC.ProviderActivity;
+import com.example.sunzh.studio3.local.permtest.DangerousPermActivity;
 import com.example.sunzh.studio3.remote.BookManagerService;
 
 import java.util.List;
@@ -253,8 +254,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void notify(View view) {
 
-        startService(new Intent(this, BService.class));
-//        notifi();
+//        startService(new Intent(this, BService.class));
+        notifi();
     }
 
     private void notifi() {
@@ -294,13 +295,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         //意图
-        Intent intent1 = new Intent(this, H5Activity.class);
+        Intent intent1 = new Intent(this, DangerousPermActivity.class);
         intent1.putExtra(H5Activity.H5_URL, "https://github.com/");
 
         //生成pendingintent的两种方法
         PendingIntent pendingIntent = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addParentStack(DangerousPermActivity.class);
             stackBuilder.addNextIntent(intent1);
             pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
@@ -313,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         Notification notification = builder.build();
-        notification.flags = Notification.FLAG_ONGOING_EVENT;
+        notification.flags = Notification.FLAG_AUTO_CANCEL;
         notificationManager.notify(test, notification);
     }
 

@@ -24,9 +24,9 @@ public class BService extends Service {
     private static final int REQUEST_CODE_CLOSE = 1002;
     private static final int REQUEST_CODE_NEXT = 1003;
     public static final String CONTROL_TAG = "control";
-    private static final String CONTROL_PLAY = "play_music";
-    private static final String CONTROL_CLOSE = "close_music";
-    private static final String CONTROL_NEXT = "next_music";
+    public static final String CONTROL_PLAY = "play_music";
+    public static final String CONTROL_CLOSE = "close_music";
+    public static final String CONTROL_NEXT = "next_music";
 
     private int test;
     private NotificationCompat.Builder builder;
@@ -112,17 +112,24 @@ public class BService extends Service {
 //        builder.setSound(Uri.parse("file///android_asset/music/ring.wav"));
 //        builder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
         builder.setVisibility(Notification.VISIBILITY_PUBLIC);
-//        builder.setPriority(Notification.PRIORITY_HIGH);
+        builder.setPriority(Notification.PRIORITY_MAX);
 
 
         //意图
+//        Intent intent1 = new Intent(this, NormalPermActivity.class);
+//        intent1.putExtra(H5Activity.H5_URL, "https://github.com/");
+
+        //创建新事务栈
         Intent intent1 = new Intent(this, H5Activity.class);
-        intent1.putExtra(H5Activity.H5_URL, "https://github.com/");
+        intent1.putExtra(H5Activity.H5_URL, "https://www.baidu.com/");
+        intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         //生成pendingintent的两种方法
         PendingIntent pendingIntent = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            //返回键正常退出至app里
+//            stackBuilder.addParentStack(NormalPermActivity.class);
             stackBuilder.addNextIntent(intent1);
             pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
@@ -131,7 +138,9 @@ public class BService extends Service {
 
         PendingIntent broadcast = PendingIntent.getBroadcast(this, 1001, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
-        builder.setContent(remoteview);
+
+        //设置自定义view
+//        builder.setContent(remoteview);
 
         Notification notification = null;
         if (Build.VERSION_CODES.JELLY_BEAN < Build.VERSION.SDK_INT) {
@@ -140,7 +149,7 @@ public class BService extends Service {
             notification = builder.getNotification();
         }
         notification.flags = Notification.FLAG_ONGOING_EVENT;
-        notificationManager.notify(test, notification);
+        notificationManager.notify(11, notification);
     }
 
 }
