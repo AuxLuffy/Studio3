@@ -40,6 +40,7 @@ import com.example.sunzh.studio3.R;
 import com.example.sunzh.studio3.contentproviderIPC.ProviderActivity;
 import com.example.sunzh.studio3.local.permtest.DangerousPermActivity;
 import com.example.sunzh.studio3.remote.BookManagerService;
+import com.example.sunzh.studio3.socketIPC.TCPClientActivity;
 
 import java.util.List;
 
@@ -129,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        //开启音乐的notification服务
         startService(new Intent(this, BService.class));
         builder = new NotificationCompat.Builder(this.getApplicationContext(), "test");
         notificationManager = (NotificationManager) this.getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
@@ -138,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bindService(new Intent(this, BookManagerService.class), mBookConn, BIND_AUTO_CREATE);
         findViewById(R.id.requestPermission).setOnClickListener(this);
         findViewById(R.id.btn_content_provider).setOnClickListener(this);
+        findViewById(R.id.btn_socket_ipc).setOnClickListener(this);
     }
 
     /**
@@ -394,8 +397,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_content_provider:
                 startActivity(new Intent(this, ProviderActivity.class));
                 break;
+            case R.id.btn_socket_ipc:
+                startActivity(new Intent(this, TCPClientActivity.class));
+                break;
             default:
                 break;
         }
     }
+
 }
